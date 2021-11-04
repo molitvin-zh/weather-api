@@ -1,0 +1,178 @@
+/*!***************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js!./styles/styles.scss ***!
+  \***************************************************************************************************************/
+@import url(https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,300;0,400;0,500;0,600;0,700;1,100;1,300;1,400;1,500;1,600;1,700&display=swap);
+/*!*******************************************************************************************************************!*\
+  !*** css ../node_modules/css-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js!./styles/styles.scss (1) ***!
+  \*******************************************************************************************************************/
+*,
+*::before,
+*::after {
+  box-sizing: border-box; }
+
+html,
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+form,
+fieldset,
+input,
+textarea,
+p,
+blockquote,
+th,
+td,
+header,
+footer,
+aside,
+nav,
+article,
+figure,
+figcaption {
+  margin: 0;
+  padding: 0; }
+
+fieldset,
+img {
+  border: 0; }
+
+address,
+caption,
+cite,
+code,
+dfn,
+em,
+strong,
+th,
+var {
+  font-style: normal;
+  font-weight: 400; }
+
+ol,
+ul {
+  list-style: none; }
+
+caption,
+th {
+  text-align: left; }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: 100%;
+  font-weight: 400; }
+
+q:before,
+q:after {
+  content: ""; }
+
+abbr,
+acronym {
+  border: 0; }
+
+a {
+  text-decoration: none; }
+
+a:active,
+a:focus {
+  outline: none; }
+
+body,
+html {
+  font-family: "Josefin Sans";
+  color: #303C6C;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.4; }
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; }
+
+input,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit; }
+
+h1,
+h2,
+h3 {
+  font-weight: bold; }
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 2rem;
+  background-color: #FBE8A6; }
+  .header__logo-container {
+    display: flex;
+    align-items: flex-end;
+    height: 3em;
+    margin: 0 auto 0 0; }
+  .header__logo-icon {
+    height: 100%; }
+  .header__logo-text {
+    font-style: italic;
+    line-height: 1em;
+    font-size: 2.2em; }
+
+.main {
+  display: flex;
+  background-color: #B4DFE5;
+  flex: 1 1 auto;
+  min-height: 20rem; }
+
+.forecast {
+  display: flex;
+  flex: 1 1 auto; }
+  .forecast__days {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    flex: 0 1 25%;
+    padding: 2rem;
+    background-color: #F4976C; }
+  .forecast__day-card {
+    height: 20%;
+    width: 100%;
+    background-color: #D1FDFE; }
+    .forecast__day-card + .forecast__day-card {
+      margin-top: 1rem; }
+  .forecast__info {
+    display: flex;
+    background-color: #B4DFE5;
+    height: 100%;
+    padding: 2rem;
+    flex: 0 1 75%; }
+  .forecast__info-content {
+    flex: 1 1 auto;
+    background-color: #303C6C; }
+
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #FBE8A6;
+  height: 4rem; }
+  .footer__author {
+    text-align: center; }
+

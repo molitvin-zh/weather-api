@@ -1,6 +1,6 @@
 const path = require('path');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
@@ -17,7 +17,7 @@ module.exports = {
     extensions: ['.js', '.json', '.png'],
     alias: {
       '@models': path.resolve(__dirname, 'src/models'),
-      '@' : path.resolve(__dirname, 'src')
+      '@': path.resolve(__dirname, 'src')
     }
   },
   optimization: {
@@ -44,7 +44,7 @@ module.exports = {
         use: [{
           loader: MiniCssExtractPlugin.loader,
           options: {}
-          },
+        },
           'css-loader'
         ]
       },
@@ -53,10 +53,14 @@ module.exports = {
         use: [{
           loader: MiniCssExtractPlugin.loader,
           options: {}
-          },
+        },
           'css-loader',
           'sass-loader'
         ]
+      },
+      {
+        test: /\.png$/,
+        use: ['file-loader']
       }
     ]
   }

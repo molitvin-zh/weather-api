@@ -1,0 +1,10 @@
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $champagne;
+  height: 4rem;
+  &__author {
+    text-align: center;
+  }
+}
