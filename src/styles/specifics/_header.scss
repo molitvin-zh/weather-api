@@ -24,6 +24,18 @@
 
 .search {
   &__input {
+    width: 30em;
+    margin-right: 2rem;
+    padding: 0.5em 1em;
+    background-color: $water;
+    border: 1px solid $powder-blue;
+    &::placeholder {
+      font-size: 0.8em;
+      font-weight: bold;
+      opacity: 0.8;
+      font-style: italic;
+      text-transform: uppercase;
+    }
   }
 }
 

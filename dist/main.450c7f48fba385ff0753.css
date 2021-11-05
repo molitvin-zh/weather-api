@@ -106,6 +106,7 @@ html {
   min-height: 100vh; }
 
 input,
+input::placeholder,
 select {
   font-family: inherit;
   font-size: inherit;
@@ -132,6 +133,19 @@ h3 {
     font-style: italic;
     line-height: 1em;
     font-size: 2.2em; }
+
+.search__input {
+  width: 30em;
+  margin-right: 2rem;
+  padding: 0.5em 1em;
+  background-color: #D1FDFE;
+  border: 1px solid #B4DFE5; }
+  .search__input::placeholder {
+    font-size: 0.8em;
+    font-weight: bold;
+    opacity: 0.8;
+    font-style: italic;
+    text-transform: uppercase; }
 
 .main {
   display: flex;
