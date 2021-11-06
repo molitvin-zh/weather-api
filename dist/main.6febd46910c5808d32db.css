@@ -163,23 +163,30 @@ h3 {
     justify-content: center;
     height: 100%;
     flex: 0 1 25%;
-    padding: 2rem;
+    padding: 2rem 0 2rem 2rem;
     background-color: #F4976C; }
-  .forecast__day-card {
+  .forecast__day-container {
     height: 20%;
-    width: 100%;
-    background-color: #D1FDFE; }
-    .forecast__day-card + .forecast__day-card {
+    width: 100%; }
+    .forecast__day-container + .forecast__day-container {
       margin-top: 1rem; }
   .forecast__info {
     display: flex;
-    background-color: #B4DFE5;
+    background-color: #D1FDFE;
     height: 100%;
     padding: 2rem;
     flex: 0 1 75%; }
   .forecast__info-content {
     flex: 1 1 auto;
-    background-color: #303C6C; }
+    background-color: #B4DFE5; }
+
+.day-card {
+  height: 100%;
+  margin-right: 2rem;
+  background-color: #D1FDFE; }
+  .day-card--active {
+    padding-right: 2rem;
+    margin-right: 0; }
 
 .footer {
   display: flex;

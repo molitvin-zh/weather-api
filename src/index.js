@@ -1,38 +1,48 @@
 import "@/styles/styles.scss";
 
+import DateInfo from "@/models/DateInfo.js";
+console.log(DataInfo);
+
 import Logo from "@/images/logo.png";
 document.querySelector('.header__logo-icon').src = Logo;
-/*
-var script = document.createElement('script');
-script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCWt-oX6XfeWXSXMS2dCj5_tmbmOf6-D9A&callback=initMap';
-script.async = true;
-*/
 
-// Attach your callback function to the `window` object
-window.initMap = function () {
+window.initMap = async function () {
   let input = document.querySelector('.search__input');
-  let autocomlete = new google.maps.places.Autocomplete(input);
+  let autocomplete = new google.maps.places.Autocomplete(input);
+  autocomplete.addListener("place_changed", () => {
+    let place = autocomplete.getPlace();
+    if (place.place_id) {
+      let params = {
+        lat: `${place.geometry.viewport.Ab.g.toFixed(1)}`,
+        lon: `${place.geometry.viewport.Ra.g.toFixed(1)}`
+      }
+      createWeather(params);
+    }
+  })
 };
 
-// Append the 'script' element to 'head'
-//document.body.appendChild(script);
+function createWeather(params) {
+  const axios = require("axios").default;
 
-/*
-import { Loader } from "@googlemaps/js-api-loader";
+  var options = {
+    method: 'GET',
+    url: 'https://weatherbit-v1-mashape.p.rapidapi.com/forecast/3hourly',
+    params: params,
+    headers: {
+      'x-rapidapi-host': 'weatherbit-v1-mashape.p.rapidapi.com',
+      'x-rapidapi-key': '7f3d1797d2msh496db73039ad91dp11d32fjsn9b8bfaeda3f7'
+    }
+  };
 
-const loader = new Loader({
-  apiKey: "AIzaSyCWt-oX6XfeWXSXMS2dCj5_tmbmOf6-D9A",
-});
+  axios.request(options).then(function (response) {
+    const data = response.data.data;
 
-loader
-  .load()
-  .then((google) => {
-    console.log(google);
-    let autocomlete = new google.maps.places;
-    console.log(autocomlete);
-    //new google.maps.Map(document.getElementById("map"), mapOptions);
-  })
-  .catch(e => {
-    // do something
+    const dateInfo = new DateInfo(data);
+    dateInfo.addDateInfo();
+
+  }).catch(function (error) {
+    console.error(error);
   });
-*/
+}
+
+
