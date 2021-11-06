@@ -16,6 +16,7 @@ window.initMap = async function () {
         lat: `${place.geometry.viewport.Ab.g.toFixed(1)}`,
         lon: `${place.geometry.viewport.Ra.g.toFixed(1)}`
       }
+
       createWeather(params);
     }
   })
@@ -39,6 +40,7 @@ function createWeather(params) {
 
     const dateInfo = new DateInfo(data);
     dateInfo.addDateInfo();
+    console.log(data);
 
   }).catch(function (error) {
     console.error(error);
