@@ -1,0 +1,57 @@
+.main {
+  display: flex;
+  background-color: $powder-blue;
+  flex: 1 1 auto;
+  min-height: 20rem;
+}
+
+.forecast {
+  display: flex;
+  flex: 1 1 auto;
+
+  &__days {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    flex: 0 1 25%;
+    padding: 2rem 0 2rem 2rem;
+    background-color: $tangerine;
+  }
+
+  &__day-container {
+    height: 20%;
+    width: 100%;
+
+    & + & {
+      margin-top: 1rem;
+    }
+
+    &--active {
+    }
+  }
+
+  &__info {
+    display: flex;
+    background-color: $water;
+    height: 100%;
+    padding: 2rem;
+    flex: 0 1 75%;
+  }
+
+  &__info-content {
+    flex: 1 1 auto;
+    background-color: $powder-blue;
+  }
+}
+
+.day-card {
+  height: 100%;
+  margin-right: 2rem;
+  background-color: $water;
+  &--active {
+    padding-right: 2rem;
+    margin-right: 0;
+  }
+}

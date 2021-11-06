@@ -1,0 +1,48 @@
+.header {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 2rem;
+  background-color: $champagne;
+
+  &__logo-container {
+    display: flex;
+    align-items: flex-end;
+    height: 3em;
+    margin: 0 auto 0 0;
+  }
+
+  &__logo-icon {
+    height: 100%;
+  }
+
+  &__logo-text {
+    font-style: italic;
+    line-height: 1em;
+    font-size: 2.2em;
+  }
+}
+
+.search {
+  &__input {
+    width: 30em;
+    margin-right: 2rem;
+    padding: 0.5em 1em;
+    background-color: $water;
+    border: 1px solid $powder-blue;
+    &::placeholder {
+      font-size: 0.8em;
+      font-weight: bold;
+      opacity: 0.8;
+      font-style: italic;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.favorites {
+  &__design {
+  }
+
+  &__select {
+  }
+}
