@@ -1,8 +1,8 @@
 .header {
   display: flex;
+  height: 80px;
   align-items: center;
-  padding: 10px 40px;
-  background-color: $champagne;
+  padding: 0 40px;
 
   &__logo-container {
     display: flex;
