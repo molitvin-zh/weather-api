@@ -1,13 +1,13 @@
 .header {
   display: flex;
   align-items: center;
-  padding: 0.5rem 2rem;
+  padding: 10px 40px;
   background-color: $champagne;
 
   &__logo-container {
     display: flex;
     align-items: flex-end;
-    height: 3em;
+    height: 60px;
     margin: 0 auto 0 0;
   }
 
@@ -17,20 +17,20 @@
 
   &__logo-text {
     font-style: italic;
+    margin: 0;
     line-height: 1em;
-    font-size: 2.2em;
+    font-size: 2.2rem;
   }
 }
-
 .search {
   &__input {
-    width: 30em;
-    margin-right: 2rem;
-    padding: 0.5em 1em;
+    width: 600px;
+    margin-right: 40px;
+    padding: 10px 20px;
     background-color: $water;
     border: 1px solid $powder-blue;
     &::placeholder {
-      font-size: 0.8em;
+      font-size: 0.8rem;
       font-weight: bold;
       opacity: 0.8;
       font-style: italic;
