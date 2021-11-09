@@ -23,12 +23,18 @@
   }
 }
 .search {
+  position: relative;
+  margin-right: 40px;
   &__input {
+    color: $american-blue;
     width: 600px;
-    margin-right: 40px;
     padding: 10px 20px;
     background-color: $water;
     border: 1px solid $powder-blue;
+    &:focus {
+      outline: none;
+      border: 3px solid $american-blue;
+    }
     &::placeholder {
       font-size: 0.8rem;
       font-weight: bold;
@@ -36,6 +42,15 @@
       font-style: italic;
       text-transform: uppercase;
     }
+  }
+  &__input-delete {
+    position: absolute;
+    cursor: pointer;
+    font-size: 1.6rem;
+    color: $american-blue;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
   }
 }
 
