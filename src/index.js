@@ -1,59 +1,103 @@
+import { API_URL, API_KEY } from '@models/constants.js';
 import Forecast from '@models/Forecast.js';
 import 'normalize.css';
 import "@/styles/styles.scss";
 import axios from 'axios';
 
-const key = '5086cdd8745d497fa07f6786dafbbcdc';
+class App {
+  constructor() {
+    this.elements = {
+      input: document.querySelector('.search__input'),
+      clearButton: document.querySelector('.search__input-delete')
+    };
 
-window.searchForecast = () => {
-  const input = document.querySelector('.search__input');
-  input.value = "Kyiv, Ukraine";
+    this.forecast = new Forecast();
 
-  const autocomplete = new google.maps.places.Autocomplete(input);
-  searchFromQuery(input);
-  autocomplete.addListener("place_changed", () => {
-    const place = autocomplete.getPlace();
+    this.service = new google.maps.places.PlacesService(this.elements.input);
+    this.autocomplete = new google.maps.places.Autocomplete(this.elements.input);
+
+    this.searchUserGeolocation();
+    this.addListeners();
+  }
+
+  searchUserGeolocation() {
+    navigator.geolocation.getCurrentPosition(
+      place => {
+        this.successSearch(place);
+      }, () => {
+        this.elements.input.value = 'Kyiv, Ukraine';
+        this.searchFromQuery();
+      });
+  }
+
+  successSearch(place) {
+    const location = {
+      lat: place.coords.latitude,
+      lon: place.coords.longitude
+    }
+
+    this.elements.input.value = "now this is your location";
+    this.createForecast(location);
+  }
+
+  searchFromQuery() {
+    const params = {
+      query: this.elements.input.value,
+      fields: ['geometry']
+    }
+
+    this.service.findPlaceFromQuery(params, place => {
+      const location = {
+        lat: place[0].geometry.location.lat(),
+        lon: place[0].geometry.location.lng()
+      }
+      this.createForecast(location);
+    });
+  }
+
+  addListeners() {
+    this.autocomplete.addListener("place_changed", () => {
+      this.handlePlaceChange();
+    })
+
+    this.elements.clearButton.addEventListener('click', () => {
+      this.handleClearSearch();
+    })
+  }
+
+  handlePlaceChange() {
+    const place = this.autocomplete.getPlace();
 
     if (!place.geometry || !place.geometry.location) {
       window.alert("No details available for input: '" + place.name + "'");
       return;
     }
-    const lat = place.geometry.location.lat()
-    const lon = place.geometry.location.lng()
-    createForecast(lat, lon);
-  })
 
-  inputDeleteByClick(input);
-};
+    const location = {
+      lat: place.geometry.location.lat(),
+      lon: place.geometry.location.lng()
+    }
 
-function createForecast(lat, lon) {
-  const params = { lat, lon, key }
+    this.createForecast(location);
+  }
 
-  axios.get('https://api.weatherbit.io/v2.0/forecast/daily', { params })
-    .then(response => {
-      const forecast = new Forecast(response.data.data);
-      forecast.createForecast();
-    }).catch(error => {
-      console.error(error);
-    });
+  createForecast(location) {
+    axios.get(API_URL, { params: { ...location, key: API_KEY } })
+      .then(response => {
+        this.forecast.createForecast(response.data.data);
+      }).catch(error => {
+        console.error(error);
+      });
+  }
+
+  handleClearSearch() {
+    this.elements.input.value = '';
+    this.elements.input.focus();
+  }
 }
 
-function searchFromQuery(input) {
-  const service = new google.maps.places.PlacesService(input);
-  service.findPlaceFromQuery({
-    query: input.value,
-    fields: ['geometry'],
-  }, function (place) {
-    const lat = place[0].geometry.location.lat()
-    const lon = place[0].geometry.location.lng()
-    createForecast(lat, lon)
-  })
+window.searchForecast = () => {
+  new App();
 }
 
-function inputDeleteByClick(input) {
-  const inputDelete = document.querySelector('.search__input-delete');
-  inputDelete.addEventListener('click', () => {
-    input.value = '';
-    input.select();
-  })
-}
+

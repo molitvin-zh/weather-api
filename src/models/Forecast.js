@@ -1,68 +1,67 @@
+const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
 export default class Forecast {
-  constructor(data) {
-    this.data = data;
+  constructor() {
+    this.forecastCardSection = document.querySelector('.forecast-card');
+    this.forecastSection = document.querySelector('.forecast');
   }
 
-  createForecast() {
-    const forecastSection = document.querySelector('.forecast');
-    forecastSection.innerHTML = '';
+  createForecast(data) {
+    this.forecastSection.innerHTML = '';
 
-    Object.values(this.data).map((dayForecast, index) => {
-      const date = new Date(dayForecast.datetime);
+    data.map((dayForecast, index) => {
+      const block = document.createElement('div');
+      block.classList = 'forecast-block';
+      this.forecastSection.append(block);
 
-      const forecastBlockHtml = `
-        <div class="forecast-block">
-          <div class="forecast-block__content">
-            <h3 class="forecast-block__date">
-              ${this.getWeekDay(date)} ${date.getDate()}
-            </h3>
-            <div class="forecast-block__icon-container">
-              <img class="forecast-block__icon">
-            </div>
-            <span class="forecast-block__temp">
-              ${dayForecast.min_temp}°C - ${dayForecast.max_temp}°C
-            </span>
-          </div>
-        </div>
-      `;
-      forecastSection.insertAdjacentHTML('beforeend', forecastBlockHtml);
+      const content = document.createElement('div');
+      content.classList = 'forecast-block__content';
+      block.append(content);
 
-      const forecastIcon = forecastSection.querySelectorAll('.forecast-block__icon')[index];
-      forecastIcon.src = require(`../images/weather-icons/${dayForecast.weather.icon}.png`);
+      const date = document.createElement('h3');
+      date.classList = 'forecast-block__date';
+      const datetime = new Date(dayForecast.datetime);
+      date.textContent = `${days[datetime.getDay()]} ${datetime.getDate()}`
+      content.append(date);
 
-      const forecastBlock = forecastSection.querySelectorAll('.forecast-block')[index];
+      const iconContainer = document.createElement('div');
+      iconContainer.classList = 'forecast-block__icon-container';
+      content.append(iconContainer);
 
-      forecastBlock.addEventListener('click', () => {
-        this.addActiveContent(forecastBlock);
-        this.createForecastCard(dayForecast, date);
+      const icon = document.createElement('img');
+      icon.classList = 'forecast-block__icon';
+      icon.src = require(`../images/weather-icons/${dayForecast.weather.icon}.png`);
+      iconContainer.append(icon);
+
+      const temp = document.createElement('span');
+      temp.classList = 'forecast-block__temp';
+      temp.textContent = `${dayForecast.min_temp}°C - ${dayForecast.max_temp}°C`;
+      content.append(temp);
+
+      block.addEventListener('click', () => {
+        this.addActiveContent(content);
+        this.createForecastCard(dayForecast, datetime);
       })
 
       if (index === 0) {
-        this.addActiveContent(forecastBlock);
-        this.createForecastCard(dayForecast, date);
+        this.addActiveContent(content);
+        this.createForecastCard(dayForecast, datetime);
       }
     });
   }
 
-  addActiveContent(forecastBlock) {
-    const allforecastContent = document.querySelectorAll('.forecast-block__content');
-
-    allforecastContent.forEach(content => {
+  addActiveContent(forecastContent) {
+    document.querySelectorAll('.forecast-block__content--active').forEach(content => {
       content.classList.remove('forecast-block__content--active');
     })
-
-    const forecastContent = forecastBlock.querySelector('.forecast-block__content');
     forecastContent.classList.add('forecast-block__content--active');
   }
 
-  createForecastCard(forecast, date,) {
-    const forecastCardSection = document.querySelector('.forecast-card');
-    forecastCardSection.innerHTML = '';
-
+  createForecastCard(forecast, date) {
     const forecastCardHtml = `
-    <h3 class="forecast-card__date">${this.getWeekDay(date)} ${date.getDate()}</h3>
+    <h3 class="forecast-card__date">${days[date.getDay()]} ${date.getDate()}</h3>
     <div class="forecast-card__icon-container">
-      <img class="forecast-card__icon" src = '../images/weather-icons/${forecast.weather.icon}.png'>
+      <img class="forecast-card__icon"'>
       <span class="forecast-card__icon-decription">
         ${forecast.weather.description}
       </span>
@@ -90,16 +89,9 @@ export default class Forecast {
         Average relative humidity: ${forecast.rh}%
       </li>
     </ul>`
-    forecastCardSection.insertAdjacentHTML('afterbegin', forecastCardHtml);
+    this.forecastCardSection.innerHTML = forecastCardHtml;
 
     const forecastIcon = document.querySelector('.forecast-card__icon');
     forecastIcon.src = require(`../images/weather-icons/${forecast.weather.icon}.png`);
   }
-
-
-  getWeekDay(date) {
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    return days[date.getDay()];
-  }
-
 }
