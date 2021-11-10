@@ -8,12 +8,13 @@ class App {
   constructor() {
     this.elements = {
       input: document.querySelector('.search__input'),
-      clearButton: document.querySelector('.search__input-delete')
+      forecastCard: document.querySelector('.forecast-card'),
+      clearButton: document.querySelector('.search__input-delete'),
+      favoritesSelect: document.querySelector('.favorites__select')
     };
 
     this.forecast = new Forecast();
 
-    this.service = new google.maps.places.PlacesService(this.elements.input);
     this.autocomplete = new google.maps.places.Autocomplete(this.elements.input);
 
     this.searchUserGeolocation();
@@ -25,35 +26,19 @@ class App {
       place => {
         this.successSearch(place);
       }, () => {
-        this.elements.input.value = 'Kyiv, Ukraine';
-        this.searchFromQuery();
+        this.createForecast({ city: 'Kyiv' })
       });
   }
 
   successSearch(place) {
     const location = {
-      lat: place.coords.latitude,
-      lon: place.coords.longitude
+      lat: place.coords.latitude + 0.06,
+      lon: place.coords.longitude + 0.03
     }
 
-    this.elements.input.value = "now this is your location";
     this.createForecast(location);
   }
 
-  searchFromQuery() {
-    const params = {
-      query: this.elements.input.value,
-      fields: ['geometry']
-    }
-
-    this.service.findPlaceFromQuery(params, place => {
-      const location = {
-        lat: place[0].geometry.location.lat(),
-        lon: place[0].geometry.location.lng()
-      }
-      this.createForecast(location);
-    });
-  }
 
   addListeners() {
     this.autocomplete.addListener("place_changed", () => {
@@ -84,11 +69,13 @@ class App {
   createForecast(location) {
     axios.get(API_URL, { params: { ...location, key: API_KEY } })
       .then(response => {
-        this.forecast.createForecast(response.data.data);
+        this.forecast.createForecast(response.data.data, response.data.city_name);
+        console.log(response.data);
       }).catch(error => {
         console.error(error);
       });
   }
+
 
   handleClearSearch() {
     this.elements.input.value = '';
