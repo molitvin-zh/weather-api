@@ -23,18 +23,41 @@
   }
 }
 .search {
+  position: relative;
+  margin-right: 40px;
   &__input {
+    color: $american-blue;
     width: 600px;
-    margin-right: 40px;
     padding: 10px 20px;
     background-color: $water;
     border: 1px solid $powder-blue;
+    &:focus {
+      outline: none;
+      border: 3px solid $american-blue;
+    }
     &::placeholder {
       font-size: 0.8rem;
       font-weight: bold;
       opacity: 0.8;
       font-style: italic;
       text-transform: uppercase;
+    }
+  }
+  &__input-delete {
+    position: absolute;
+    height: 30px;
+    width: 30px;
+    top: 50%;
+    padding: 0;
+    right: 20px;
+    border: none;
+    background: none;
+    transform: translateY(-50%);
+
+    img {
+      height: 100%;
+      cursor: pointer;
+      object-fit: cover;
     }
   }
 }
