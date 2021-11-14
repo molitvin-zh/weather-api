@@ -1,5 +1,6 @@
 import { API_URL, API_KEY } from '@models/constants.js';
 import Forecast from '@models/Forecast.js';
+import Favorites from '@models/Favorites.js';
 import 'normalize.css';
 import "@/styles/styles.scss";
 import axios from 'axios';
@@ -8,15 +9,15 @@ class App {
   constructor() {
     this.elements = {
       input: document.querySelector('.search__input'),
-      forecastCard: document.querySelector('.forecast-card'),
       clearButton: document.querySelector('.search__input-delete'),
       favoritesSelect: document.querySelector('.favorites__select')
     };
 
     this.forecast = new Forecast();
-
+    this.favorites = new Favorites();
     this.autocomplete = new google.maps.places.Autocomplete(this.elements.input);
 
+    this.favorites.createFavoritesSelect();
     this.searchUserGeolocation();
     this.addListeners();
   }
@@ -26,7 +27,7 @@ class App {
       place => {
         this.successSearch(place);
       }, () => {
-        this.createForecast({ city: 'Kyiv' })
+        this.buildPageByQuery({ city: 'Kiev' })
       });
   }
 
@@ -36,7 +37,7 @@ class App {
       lon: place.coords.longitude + 0.03
     }
 
-    this.createForecast(location);
+    this.buildPageByQuery(location);
   }
 
 
@@ -47,6 +48,14 @@ class App {
 
     this.elements.clearButton.addEventListener('click', () => {
       this.handleClearSearch();
+    })
+
+    this.elements.favoritesSelect.addEventListener('change', (e) => {
+      const select = e.target;
+      const option = select.options[select.selectedIndex];
+      const location = JSON.parse(option.dataset.location);
+
+      if (select.value !== 'favorites') this.buildPageByQuery(location);
     })
   }
 
@@ -63,14 +72,23 @@ class App {
       lon: place.geometry.location.lng()
     }
 
-    this.createForecast(location);
+    this.buildPageByQuery(location);
   }
 
-  createForecast(location) {
-    axios.get(API_URL, { params: { ...location, key: API_KEY } })
+  buildPageByQuery(params) {
+    axios.get(API_URL, { params: { ...params, key: API_KEY } })
       .then(response => {
-        this.forecast.createForecast(response.data.data, response.data.city_name);
-        console.log(response.data);
+        const data = {
+          forecast: response.data.data,
+          location: {
+            lat: response.data.lat,
+            lon: response.data.lon
+          },
+          name: response.data.city_name
+        }
+
+        this.forecast.createForecast(data.forecast);
+        this.favorites.addCitySection(data.name, data.location);
       }).catch(error => {
         console.error(error);
       });

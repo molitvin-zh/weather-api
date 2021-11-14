@@ -6,7 +6,7 @@ export default class Forecast {
     this.forecastSection = document.querySelector('.forecast');
   }
 
-  createForecast(data, cityName) {
+  createForecast(data) {
     this.forecastSection.innerHTML = '';
 
     data.map((dayForecast, index) => {
@@ -41,7 +41,6 @@ export default class Forecast {
       block.addEventListener('click', () => {
         this.addActiveContent(content);
         this.createForecastCard(dayForecast, datetime);
-        this.createCityBlock(cityName);
       })
 
       if (index === 0) {
@@ -50,7 +49,7 @@ export default class Forecast {
       }
     });
 
-    this.createCityBlock(cityName);
+
   }
 
   addActiveContent(forecastContent) {
@@ -97,21 +96,5 @@ export default class Forecast {
 
     const forecastIcon = document.querySelector('.forecast-card__icon');
     forecastIcon.src = require(`../images/weather-icons/${forecast.weather.icon}.png`);
-  }
-
-  createCityBlock(cityName) {
-    const block = document.createElement('div');
-    block.classList = 'city';
-    this.forecastCardSection.prepend(block);
-
-    const city = document.createElement('h2');
-    city.classList = 'city__name';
-    city.textContent = cityName;
-    block.append(city);
-
-    const btn = document.createElement('button');
-    btn.classList = 'city__btn';
-    btn.textContent = 'add to favorites';
-    block.append(btn);
   }
 }

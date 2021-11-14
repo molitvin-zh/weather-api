@@ -4,14 +4,22 @@
   background-color: $tangerine;
   padding: 40px;
   margin-bottom: -20px;
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    flex: 0 1 30%;
+    padding-right: 40px;
+  }
 }
 
 .forecast-card {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
-  flex: 0 1 30%;
   background-color: $american-blue;
-  border-radius: 20px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
   color: $water;
 
   &__date {
@@ -34,9 +42,6 @@
     text-align: center;
   }
 
-  &__list {
-  }
-
   &__item {
     display: block;
     font-size: 1.2rem;
@@ -52,10 +57,6 @@
   flex-wrap: wrap;
   flex: 0 1 70%;
   margin: -10px;
-}
-
-.forecast-card + .forecast {
-  margin-left: 40px;
 }
 
 .forecast-block {

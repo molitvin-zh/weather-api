@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Webpack</title>
+  <title>Weather</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,23 +24,17 @@
         <button class="search__input-delete"><img src="./images/delete-icon.svg" alt=""></button>
       </div>
       <div class="favorites">
-        <select name="favorites" id="favorites" class="favorites__select">
-          <option class="favorites__option">favorite</option>
-        </select>
-
+        <select name="favorites" class="favorites__select"></select>
       </div>
     </header>
 
     <main class="main">
+      <div class="main__container">
+        <section class="city"></section>
+        <section class="forecast-card"></section>
+      </div>
 
-      <section class="forecast-card">
-
-      </section>
-
-      <section class="forecast">
-
-      </section>
-
+      <section class="forecast"></section>
     </main>
 
     <footer class="footer">
