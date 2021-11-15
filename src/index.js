@@ -1,22 +1,25 @@
-import { API_URL, API_KEY } from '@models/constants.js';
+import { API_URL, API_KEY, GOOGLE_KEY } from '@models/constants.js';
 import Forecast from '@models/Forecast.js';
+import Favorites from '@models/Favorites.js';
 import 'normalize.css';
 import "@/styles/styles.scss";
 import axios from 'axios';
+import unescape from 'lodash.unescape';
 
 class App {
   constructor() {
     this.elements = {
       input: document.querySelector('.search__input'),
-      forecastCard: document.querySelector('.forecast-card'),
       clearButton: document.querySelector('.search__input-delete'),
       favoritesSelect: document.querySelector('.favorites__select')
     };
 
     this.forecast = new Forecast();
+    this.favorites = new Favorites();
 
     this.autocomplete = new google.maps.places.Autocomplete(this.elements.input);
 
+    this.favorites.createFavoritesSelect();
     this.searchUserGeolocation();
     this.addListeners();
   }
@@ -26,17 +29,18 @@ class App {
       place => {
         this.successSearch(place);
       }, () => {
-        this.createForecast({ city: 'Kyiv' })
+        this.buildPageByQuery({ lat: "50.45", lon: "30.52" }, "Kyiv")
       });
   }
 
   successSearch(place) {
     const location = {
-      lat: place.coords.latitude + 0.06,
-      lon: place.coords.longitude + 0.03
+      lat: place.coords.latitude,
+      lon: place.coords.longitude
     }
 
-    this.createForecast(location);
+    this.getCityName(location.lat, location.lon)
+      .then(name => this.buildPageByQuery(location, name))
   }
 
 
@@ -48,6 +52,19 @@ class App {
     this.elements.clearButton.addEventListener('click', () => {
       this.handleClearSearch();
     })
+
+
+    this.elements.favoritesSelect.addEventListener('change', (e) => {
+      const name = unescape(e.target.value);
+
+      if (name !== 'favorites') {
+        const location = this.favorites.getCityLocation(name);
+
+        if (location) {
+          this.buildPageByQuery(location, name);
+        }
+      }
+    })
   }
 
   handlePlaceChange() {
@@ -58,28 +75,40 @@ class App {
       return;
     }
 
+    const name = place.name;
+
     const location = {
       lat: place.geometry.location.lat(),
       lon: place.geometry.location.lng()
     }
 
-    this.createForecast(location);
+    this.buildPageByQuery(location, name);
   }
 
-  createForecast(location) {
-    axios.get(API_URL, { params: { ...location, key: API_KEY } })
+  handleClearSearch() {
+    this.elements.input.value = '';
+    this.elements.input.focus();
+  }
+
+  buildPageByQuery(params, name) {
+    axios.get(API_URL, { params: { ...params, key: API_KEY } })
       .then(response => {
-        this.forecast.createForecast(response.data.data, response.data.city_name);
-        console.log(response.data);
+        const data = {
+          forecast: response.data.data,
+          lat: response.data.lat,
+          lon: response.data.lon,
+        }
+
+        this.forecast.createForecast(data.forecast);
+        this.favorites.createCitySection(name, data.lat, data.lon);
       }).catch(error => {
         console.error(error);
       });
   }
 
-
-  handleClearSearch() {
-    this.elements.input.value = '';
-    this.elements.input.focus();
+  async getCityName(lat, lon) {
+    const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&result_type=locality&key=${GOOGLE_KEY}`);
+    return response.data.results[0].address_components[0].long_name;
   }
 }
 
