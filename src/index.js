@@ -4,6 +4,7 @@ import Favorites from '@models/Favorites.js';
 import 'normalize.css';
 import "@/styles/styles.scss";
 import axios from 'axios';
+import unescape from 'lodash.unescape';
 
 class App {
   constructor() {
@@ -15,6 +16,8 @@ class App {
 
     this.forecast = new Forecast();
     this.favorites = new Favorites();
+
+    this.geocoder = new google.maps.Geocoder();
     this.autocomplete = new google.maps.places.Autocomplete(this.elements.input);
 
     this.favorites.createFavoritesSelect();
@@ -27,14 +30,14 @@ class App {
       place => {
         this.successSearch(place);
       }, () => {
-        this.buildPageByQuery({ city: 'Kiev' })
+        this.buildPageByQuery({ city: 'Kyiv' })
       });
   }
 
   successSearch(place) {
     const location = {
-      lat: place.coords.latitude + 0.06,
-      lon: place.coords.longitude + 0.03
+      lat: place.coords.latitude,
+      lon: place.coords.longitude
     }
 
     this.buildPageByQuery(location);
@@ -50,12 +53,17 @@ class App {
       this.handleClearSearch();
     })
 
-    this.elements.favoritesSelect.addEventListener('change', (e) => {
-      const select = e.target;
-      const option = select.options[select.selectedIndex];
-      const location = JSON.parse(option.dataset.location);
 
-      if (select.value !== 'favorites') this.buildPageByQuery(location);
+    this.elements.favoritesSelect.addEventListener('change', (e) => {
+      const city = unescape(e.target.value);
+
+      if (city !== 'favorites') {
+        const location = this.favorites.getCityLocation(city);
+
+        if (location) {
+          this.buildPageByQuery(location);
+        }
+      }
     })
   }
 
@@ -67,6 +75,8 @@ class App {
       return;
     }
 
+    const name = place.name;
+
     const location = {
       lat: place.geometry.location.lat(),
       lon: place.geometry.location.lng()
@@ -75,29 +85,50 @@ class App {
     this.buildPageByQuery(location);
   }
 
+  handleClearSearch() {
+    this.elements.input.value = '';
+    this.elements.input.focus();
+  }
+
   buildPageByQuery(params) {
     axios.get(API_URL, { params: { ...params, key: API_KEY } })
       .then(response => {
         const data = {
           forecast: response.data.data,
-          location: {
-            lat: response.data.lat,
-            lon: response.data.lon
-          },
-          name: response.data.city_name
+
+          lat: response.data.lat,
+          lon: response.data.lon
+
         }
 
         this.forecast.createForecast(data.forecast);
-        this.favorites.addCitySection(data.name, data.location);
+
+        this.getCityName(data.lat, data.lon)
+          .then(name => this.favorites.createCitySection(name, data.lat, data.lon))
+
       }).catch(error => {
         console.error(error);
       });
   }
 
+  async getCityName(lat, lon) {
+    let city = '';
+    const latlng = await new google.maps.LatLng(lat, lon);
 
-  handleClearSearch() {
-    this.elements.input.value = '';
-    this.elements.input.focus();
+    await this.geocoder.geocode({ 'latLng': latlng }, (results, status) => {
+      if (status == google.maps.GeocoderStatus.OK) {
+        const result = results[0];
+
+        for (let i = 0, len = result.address_components.length; i < len; i++) {
+          const ac = result.address_components[i];
+          if (ac.types.indexOf("locality") >= 0) city = ac.long_name;
+        }
+      } else {
+        alert("Geocoder failed due to: " + status);
+      }
+    });
+
+    if (city != '') return city;
   }
 }
 
