@@ -2,38 +2,37 @@ import escape from 'lodash.escape';
 
 export default class Favorites {
   constructor() {
-    this.name;
     this.favoritesSelect = document.querySelector('.favorites__select');
     this.citySection = document.querySelector('.city');
-    this.cityNameTitle;
-    this.cityButton;
   }
 
   createCitySection(name, lat, lon) {
-    this.name = name;
-    this.addCitySection();
-    this.addEventListener(lat, lon);
-  }
-
-  addCitySection() {
     this.citySection.innerHTML = '';
 
-    this.cityNameTitle = document.createElement('h2');
-    this.cityNameTitle.classList = 'city__name';
-    this.cityNameTitle.textContent = this.name;
-    this.citySection.append(this.cityNameTitle);
+    const cityNameTitle = document.createElement('h2');
+    cityNameTitle.classList = 'city__name';
+    cityNameTitle.textContent = name;
+    this.citySection.append(cityNameTitle);
 
-    this.cityButton = document.createElement('button');
-    this.cityButton.classList = 'city__btn';
-    this.citySection.append(this.cityButton);
+    const cityButton = document.createElement('button');
+    cityButton.classList = 'city__btn';
 
-    this.assignButtonContent();
+    this.assignButtonContent(name, cityButton);
+    cityButton.addEventListener('click', () => {
+      if (!this.isFavorite(name)) {
+        this.addToFavorites(name, lat, lon);
+      } else {
+        this.removeFromFavorites(name);
+      }
+      this.assignButtonContent(name, cityButton);
+    });
+
+    this.citySection.append(cityButton);
   }
 
-  assignButtonContent() {
-    if (this.isFavorite(this.name)) {
-      this.cityButton.textContent = 'remove';
-    } else { this.cityButton.textContent = 'add'; }
+  assignButtonContent(name, btn) {
+    const isFavorite = this.isFavorite(name)
+    btn.textContent = isFavorite ? 'remove' : 'add'
   }
 
   isFavorite(city) {
@@ -45,16 +44,6 @@ export default class Favorites {
     return favorites.find(city => city.name === cityName)
   }
 
-  addEventListener(lat, lon) {
-    this.cityButton.addEventListener('click', () => {
-      if (!this.isFavorite(this.name)) {
-        this.addToFavorites(this.name, lat, lon);
-      } else {
-        this.removeFromFavorites(this.name);
-      }
-    });
-  }
-
   addToFavorites(name, lat, lon) {
     const favorites = this.getFavorites();
 
@@ -64,7 +53,6 @@ export default class Favorites {
     ]));
 
     this.createOption(name);
-    this.assignButtonContent();
   }
 
   getFavorites() {
@@ -83,12 +71,10 @@ export default class Favorites {
   removeFromFavorites(name) {
     const favorites = this.getFavorites();
 
-    localStorage.setItem('favorites', JSON.stringify([
-      ...favorites.filter((favorite) => favorite.name !== name)
-    ]));
+    localStorage.setItem('favorites',
+      JSON.stringify(favorites.filter((favorite) => favorite.name !== name)));
 
     this.removeOption(name);
-    this.assignButtonContent();
   }
 
   removeOption(cityName) {
