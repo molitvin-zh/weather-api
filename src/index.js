@@ -5,6 +5,7 @@ import 'normalize.css';
 import "@/styles/styles.scss";
 import axios from 'axios';
 import unescape from 'lodash.unescape';
+import queryString from 'query-string';
 
 class App {
   constructor() {
@@ -18,10 +19,20 @@ class App {
     this.favorites = new Favorites();
 
     this.autocomplete = new google.maps.places.Autocomplete(this.elements.input);
-
     this.favorites.createFavoritesSelect();
-    this.searchUserGeolocation();
+
+    this.checkUrl();
     this.addListeners();
+  }
+
+  checkUrl() {
+    if (window.location.search) {
+      const search = queryString.parse(window.location.search);
+      const params = { lat: search.lat, lon: search.lon };
+      this.buildPageByQuery(params, search.name)
+    } else {
+      this.searchUserGeolocation();
+    }
   }
 
   searchUserGeolocation() {
@@ -29,7 +40,7 @@ class App {
       place => {
         this.successSearch(place);
       }, () => {
-        this.buildPageByQuery({ lat: "50.45", lon: "30.52" }, "Kyiv")
+        this.buildPageByQuery({ lat: "50.3944662", lon: "30.4911014" }, "Kyiv")
       });
   }
 
@@ -101,9 +112,14 @@ class App {
 
         this.forecast.createForecast(data.forecast);
         this.favorites.createCitySection(name, data.lat, data.lon);
+
+        const search = queryString.stringify({ ...params, name })
+        window.history.pushState({}, '', `?${search}`);
+
       }).catch(error => {
-        console.error(error);
+        window.alert(error);
       });
+
   }
 
   async getCityName(lat, lon) {
